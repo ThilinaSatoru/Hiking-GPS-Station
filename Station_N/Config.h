@@ -1,0 +1,120 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <TinyGPS++.h>
+#include <SoftwareSerial.h>
+#include "painlessMesh.h"
+#include <ArduinoJson.h>
+
+// ==============================================
+// Display Configuration
+// ==============================================
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET -1
+#define SCREEN_ADDRESS 0x3C
+
+extern Adafruit_SSD1306 display;
+
+// ==============================================
+// GPS Configuration
+// ==============================================
+#define GPS_RX_PIN D3  // Connect to GPS TX
+#define GPS_TX_PIN D4  // Connect to GPS RX
+#define GPS_BAUD 9600
+
+extern TinyGPSPlus gps;
+extern SoftwareSerial gpsSerial;
+
+// ==============================================
+// Button and LED Configuration
+// ==============================================
+#define BUTTON1_PIN D5
+#define BUTTON2_PIN D6
+#define LED1_PIN D7
+#define LED2_PIN D8
+
+// System timing constants (in milliseconds)
+const unsigned long LED_TIMEOUT_MS = 2000;
+const unsigned long MESH_UPDATE_INTERVAL_MS = 5000;
+const unsigned long DEBUG_INTERVAL_MS = 5000;
+
+// State variables
+extern bool led1State;
+extern bool led2State;
+extern bool lastButton1State;
+extern bool lastButton2State;
+extern unsigned long led2Timer;
+
+// ==============================================
+// Mesh Network Configuration
+// ==============================================
+#define MESH_PREFIX     "HIKING"
+#define MESH_PASSWORD   "meshPassword"
+#define MESH_PORT       5555
+#define STATION_NUMBER  1
+
+extern painlessMesh mesh;
+extern Scheduler meshScheduler;
+extern bool EMERGENCY;
+extern bool HELP;
+extern uint32_t nodeId;
+
+// ==============================================
+// System Status Structure
+// ==============================================
+struct SystemStatus {
+    bool isGPSFixed;
+    bool isMeshConnected;
+    bool isEmergency;
+    bool isHelp;
+    int satelliteCount;
+    int meshNodeCount;
+    float lastLatitude;
+    float lastLongitude;
+};
+
+extern SystemStatus systemStatus;
+
+// ==============================================
+// Function Declarations
+// ==============================================
+// Display functions
+void setupDisplay();
+void updateDisplay();
+void displayGPSData();
+void displayMeshStatus();
+void displayEmergencyStatus();
+
+// GPS functions
+void setupGPS();
+void updateGPS();
+bool isGPSValid();
+float getLatitude();
+float getLongitude();
+void displayGPSInfo();
+
+// Button and LED functions
+void setupButtons();
+void handleButtons();
+void handleLEDStates();
+void updateLEDState();
+
+// Mesh functions
+void setupMesh();
+void sendMeshData();
+String getMeshData();
+void receivedCallback(uint32_t from, String &msg);
+void newConnectionCallback(uint32_t nodeId);
+void changedConnectionCallback();
+void nodeTimeAdjustedCallback(int32_t offset);
+
+// Utility functions
+void updateSystemStatus();
+void printDebugInfo();
+void handleErrors();
+
+#endif
