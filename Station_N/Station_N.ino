@@ -1,7 +1,3 @@
-// #include "MeshConfig.h"
-// #include "ButtonConfig.h"
-// #include "DisplayConfig.h"
-// #include "GPSConfig.h"
 #include "Config.h"
 
 void setup() {
@@ -25,6 +21,7 @@ void loop() {
     handleButtons();
     updateGPS();
     updateDisplay();
+    ReadBattery();
     
     delay(50);
 }

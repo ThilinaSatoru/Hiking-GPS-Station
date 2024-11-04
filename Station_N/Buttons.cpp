@@ -1,10 +1,5 @@
 #include "Config.h"
 
-bool led1State = false;  // Now reflects EMERGENCY state
-bool led2State = false;
-bool lastButton1State = HIGH;
-bool lastButton2State = HIGH;
-unsigned long led2Timer = 0;  // Only LED2 uses timer now
 const unsigned long LED_TIMEOUT = 2000;
 
 void setupButtons() {
@@ -25,6 +20,9 @@ void handleButtonPress(int buttonPin, bool &lastButtonState) {
             EMERGENCY = true;  // Set emergency state
             led1State = true;  // Update LED1 state to match EMERGENCY
             digitalWrite(LED1_PIN, HIGH);
+            
+            emergencyDisplayState = EMERGENCY_DISPLAY_SENDING;
+
         } else if (buttonPin == BUTTON2_PIN) {
             HELP = true;
             led2State = true;
@@ -45,13 +43,6 @@ void handleLEDStates() {
         led1State = true;
         digitalWrite(LED1_PIN, HIGH);
     }
-    
-    // LED2 still uses timeout
-    // unsigned long currentTime = millis();
-    // if (led2State && (currentTime - led2Timer >= LED_TIMEOUT)) {
-    //     led2State = false;
-    //     digitalWrite(LED2_PIN, LOW);
-    // }
 }
 
 void updateLEDState() {

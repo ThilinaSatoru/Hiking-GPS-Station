@@ -5,10 +5,10 @@
 #define GPS_RX_PIN D3  // Connect to GPS TX
 #define GPS_TX_PIN D4  // Connect to GPS RX
 
-#define BUTTON1_PIN D5
+#define BUTTON1_PIN D5 //
 #define BUTTON2_PIN D6
 
-#define LED1_PIN D7
+#define LED1_PIN D7 //
 #define LED2_PIN D8
 
 

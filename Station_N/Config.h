@@ -8,6 +8,7 @@
 #include <SoftwareSerial.h>
 #include "painlessMesh.h"
 #include <ArduinoJson.h>
+#include <Arduino.h>
 
 // ==============================================
 // Display Configuration
@@ -18,6 +19,20 @@
 #define SCREEN_ADDRESS 0x3C
 
 extern Adafruit_SSD1306 display;
+
+// New global variables
+extern unsigned long emergencyStartTime;
+extern unsigned long emergencyDuration;
+
+enum EmergencyDisplayState {
+    EMERGENCY_DISPLAY_IDLE,
+    EMERGENCY_DISPLAY_SENDING,
+    EMERGENCY_DISPLAY_SENT
+};
+
+extern EmergencyDisplayState emergencyDisplayState;
+extern unsigned long emergencyDisplayTimer;
+extern const unsigned long DISPLAY_SENT_DURATION;
 
 // ==============================================
 // GPS Configuration
@@ -55,13 +70,19 @@ extern unsigned long led2Timer;
 #define MESH_PREFIX     "HIKING"
 #define MESH_PASSWORD   "meshPassword"
 #define MESH_PORT       5555
-#define STATION_NUMBER  1
+#define STATION_NUMBER  2
 
 extern painlessMesh mesh;
 extern Scheduler meshScheduler;
 extern bool EMERGENCY;
 extern bool HELP;
 extern uint32_t nodeId;
+
+// ==============================================
+// Battery Configuration
+// ==============================================
+#define BATTERY_PIN  A0
+extern int batteryPercentage;
 
 // ==============================================
 // System Status Structure
@@ -71,6 +92,7 @@ struct SystemStatus {
     bool isMeshConnected;
     bool isEmergency;
     bool isHelp;
+    int batteryPercentage;
     int satelliteCount;
     int meshNodeCount;
     float lastLatitude;
@@ -88,6 +110,7 @@ void updateDisplay();
 void displayGPSData();
 void displayMeshStatus();
 void displayEmergencyStatus();
+unsigned long getEmergencyDurationMinutes();
 
 // GPS functions
 void setupGPS();
@@ -116,5 +139,7 @@ void nodeTimeAdjustedCallback(int32_t offset);
 void updateSystemStatus();
 void printDebugInfo();
 void handleErrors();
+
+void ReadBattery();
 
 #endif

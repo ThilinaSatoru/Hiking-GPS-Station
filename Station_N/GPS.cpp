@@ -1,8 +1,4 @@
-// #include "GPSConfig.h"
 #include "Config.h"
-
-TinyGPSPlus gps;
-SoftwareSerial gpsSerial(GPS_RX_PIN, GPS_TX_PIN);
 
 void setupGPS() {
     gpsSerial.begin(GPS_BAUD);
@@ -53,14 +49,14 @@ void displayGPSInfo() {
         Serial.println(F("Location: Not Available"));
     }
 
-    // if (gps.date.isValid()) {
-    //     Serial.print(F("Date: "));
-    //     Serial.print(gps.date.month());
-    //     Serial.print(F("/"));
-    //     Serial.print(gps.date.day());
-    //     Serial.print(F("/"));
-    //     Serial.println(gps.date.year());
-    // }
+    if (gps.date.isValid()) {
+        Serial.print(F("Date: "));
+        Serial.print(gps.date.month());
+        Serial.print(F("/"));
+        Serial.print(gps.date.day());
+        Serial.print(F("/"));
+        Serial.println(gps.date.year());
+    }
 
     // if (gps.time.isValid()) {
     //     Serial.print(F("Time: "));
