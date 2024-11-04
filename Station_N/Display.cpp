@@ -62,7 +62,7 @@ void updateEmergencyStatus() {
 void displayEmergencyStatus() {
     switch (emergencyDisplayState) {
         case EMERGENCY_DISPLAY_IDLE:
-            display.println("Press SOS");
+            display.println("Press SOS Button");
             break;
         case EMERGENCY_DISPLAY_SENDING:
             display.println("Sending SOS");

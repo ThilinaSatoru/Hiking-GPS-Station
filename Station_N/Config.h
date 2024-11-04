@@ -48,9 +48,7 @@ extern SoftwareSerial gpsSerial;
 // Button and LED Configuration
 // ==============================================
 #define BUTTON1_PIN D5
-#define BUTTON2_PIN D6
 #define LED1_PIN D7
-#define LED2_PIN D8
 
 // System timing constants (in milliseconds)
 const unsigned long LED_TIMEOUT_MS = 2000;
@@ -59,9 +57,7 @@ const unsigned long DEBUG_INTERVAL_MS = 5000;
 
 // State variables
 extern bool led1State;
-extern bool led2State;
 extern bool lastButton1State;
-extern bool lastButton2State;
 extern unsigned long led2Timer;
 
 // ==============================================
@@ -75,7 +71,6 @@ extern unsigned long led2Timer;
 extern painlessMesh mesh;
 extern Scheduler meshScheduler;
 extern bool EMERGENCY;
-extern bool HELP;
 extern uint32_t nodeId;
 
 // ==============================================
@@ -91,7 +86,6 @@ struct SystemStatus {
     bool isGPSFixed;
     bool isMeshConnected;
     bool isEmergency;
-    bool isHelp;
     int batteryPercentage;
     int satelliteCount;
     int meshNodeCount;

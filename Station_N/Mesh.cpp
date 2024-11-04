@@ -53,12 +53,7 @@ void receivedCallback(uint32_t from, String &msg) {
         if (confirmedStation == STATION_NUMBER && confirmedNodeId == String(nodeId)) {
             Serial.println("Received confirmation from Main.");
             EMERGENCY = false;
-            HELP = false;
             updateLEDState();  // This will update LED1 state
-
-            // emergencyDuration = millis() - emergencyStartTime;  // Store the final duration
-            // emergencyDisplayState = EMERGENCY_DISPLAY_SENT;
-            // emergencyDisplayTimer = millis();
         }
     } else if (messageType == "request") {
         sendMeshData();
