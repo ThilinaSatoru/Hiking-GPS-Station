@@ -2,6 +2,8 @@
 
 bool wasEmergencyActive = false;
 bool emergencyJustSent = false;
+// unsigned long emergencyStartTime = 0;
+// unsigned long emergencyDuration = 0;
 
 void setupDisplay() {
     if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
@@ -32,23 +34,29 @@ void centerText(const char* text, int y, int textSize) {
 }
 
 unsigned long getEmergencyDurationMinutes() {
-    if (EMERGENCY) {
+    if (emergencyDisplayState == EMERGENCY_DISPLAY_SENDING) {
         return (millis() - emergencyStartTime) / 60000; // Convert milliseconds to minutes
     }
-    return emergencyDuration / 60000;
+    return emergencyDuration / 60000; // Return the final duration after sent
+}
+unsigned long getEmergencyDurationSeconds() {
+    if (emergencyDisplayState == EMERGENCY_DISPLAY_SENDING) {
+        return (millis() - emergencyStartTime) / 1000; // Convert milliseconds to seconds
+    }
+    return emergencyDuration / 1000; // Return the final duration in seconds
 }
 
 void updateEmergencyStatus() {
     if (EMERGENCY && !wasEmergencyActive) {
         // Emergency just became active
         emergencyDisplayState = EMERGENCY_DISPLAY_SENDING;
-        // emergencyStartTime = millis();
+        emergencyStartTime = millis(); // Start timing when entering SENDING state
         wasEmergencyActive = true;
     } else if (!EMERGENCY && wasEmergencyActive) {
         // Emergency just ended
         emergencyDisplayState = EMERGENCY_DISPLAY_SENT;
         emergencyDisplayTimer = millis();
-        // emergencyDuration = millis() - emergencyStartTime;
+        emergencyDuration = millis() - emergencyStartTime; // Store final duration
         wasEmergencyActive = false;
         emergencyJustSent = true;
     } else if (!EMERGENCY && emergencyJustSent && 
@@ -66,12 +74,19 @@ void displayEmergencyStatus() {
             break;
         case EMERGENCY_DISPLAY_SENDING:
             display.println("Sending SOS");
+            char sendingText[20];
+            snprintf(sendingText, sizeof(sendingText), "Time elapsed: %lu sec", getEmergencyDurationSeconds());
+            display.println(sendingText);
             break;
         case EMERGENCY_DISPLAY_SENT:
             display.println("SOS Sent to Emergency Services");
+            char durationText[20];
+            snprintf(durationText, sizeof(durationText), "Total time: %lu sec", getEmergencyDurationSeconds());
+            display.println(durationText);
             break;
     }
 }
+
 
 void displayDuration() {
   char durationText[20];
@@ -118,10 +133,8 @@ void updateDisplay() {
     display.clearDisplay();
     display.setCursor(0,0);
     updateEmergencyStatus();
-    // Display all information in sections
+    
     displayEmergencyStatus();
-    display.println();
-    displayDuration();
     displayGPSData();
     displayMeshStatus();
     displayBatteryStatus();
