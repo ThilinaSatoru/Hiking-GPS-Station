@@ -14,14 +14,14 @@ void setup() {
     display.display();
     
     delay(2000);
-}
+}/
 
 void loop() {
     mesh.update();
     handleButtons();
-    updateGPS();
-    updateDisplay();
-    ReadBattery();
+    // updateGPS();
+    // updateDisplay();
+    // ReadBattery();
     
     delay(50);
 }
