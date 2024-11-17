@@ -20,9 +20,9 @@ app = Flask(__name__)
 
 # Initialize Firebase Admin SDK
 try:
-    cred = credentials.Certificate('hikinggpsmesh-firebase-adminsdk-372xn-f4810366d7.json')
+    cred = credentials.Certificate('peakfinderadmin-5cbd9-firebase-adminsdk-vegs5-fea080e489.json')
     firebase_admin.initialize_app(cred, {
-        'databaseURL': 'https://hikinggpsmesh-default-rtdb.asia-southeast1.firebasedatabase.app'
+        'databaseURL': 'https://peakfinderadmin-5cbd9-default-rtdb.asia-southeast1.firebasedatabase.app/'
     })
     log.info("Firebase initialized successfully")
 except Exception as e:

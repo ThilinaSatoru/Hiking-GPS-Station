@@ -71,15 +71,18 @@ void displayEmergencyStatus() {
     switch (emergencyDisplayState) {
         case EMERGENCY_DISPLAY_IDLE:
             display.println("Press SOS Button");
+            display.println("");
             break;
         case EMERGENCY_DISPLAY_SENDING:
             display.println("Sending SOS");
             char sendingText[20];
             snprintf(sendingText, sizeof(sendingText), "Time elapsed: %lu sec", getEmergencyDurationSeconds());
             display.println(sendingText);
+            display.println("");
             break;
         case EMERGENCY_DISPLAY_SENT:
             display.println("SOS Sent to Emergency Services");
+            display.println("");
             char durationText[20];
             snprintf(durationText, sizeof(durationText), "Total time: %lu sec", getEmergencyDurationSeconds());
             display.println(durationText);
@@ -121,7 +124,12 @@ void displayMeshStatus() {
     if(mesh.getNodeList().size() == 0) {
       display.println("Connecting...");
     } else {
-      display.print("Connected Stations: ");display.print(mesh.getNodeList().size());
+      
+      display.print("Station: ");
+      display.print(STATION_NUMBER);
+      display.print(" (");
+      display.print(mesh.getNodeList().size());
+      display.println(") online");
     }
 }
 

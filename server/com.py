@@ -16,7 +16,7 @@ logging.basicConfig(
 )
 log = logging.getLogger("rich")
 
-COM_PORT = 'COM8'
+COM_PORT = 'COM15'
 BAUD_RATE = 115200
 MAX_RETRIES = 1
 RETRY_DELAY = 5  # seconds
