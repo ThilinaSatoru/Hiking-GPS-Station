@@ -34,7 +34,7 @@
 
 ![screenshot](assets/devices.jpg)
 
-## Key Features
+<!-- ## Key Features
 
 * LivePreview - Make changes, See changes
   - Instantly see what your Markdown documents look like in HTML as you create them.
@@ -54,7 +54,7 @@
 * Cross platform
   - Windows, macOS and Linux ready.
 
----
+--- -->
 
 ## Overview
 
