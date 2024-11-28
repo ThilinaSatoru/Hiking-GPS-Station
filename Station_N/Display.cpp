@@ -2,8 +2,6 @@
 
 bool wasEmergencyActive = false;
 bool emergencyJustSent = false;
-// unsigned long emergencyStartTime = 0;
-// unsigned long emergencyDuration = 0;
 
 void setupDisplay() {
     if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
@@ -19,26 +17,6 @@ void setupDisplay() {
     display.display();
 }
 
-void centerText(const char* text, int y, int textSize) {
-  display.setTextSize(textSize);  // Set the text size
-  int16_t x1, y1;
-  uint16_t width, height;
-  // Get the width of the text in pixels
-  display.getTextBounds(text, 0, y, &x1, &y1, &width, &height);
-  // Calculate the x position to center the text
-  int x = (display.width() - width) / 2;
-  // Set the cursor to the calculated position
-  display.setCursor(x, y);
-  // Print the text
-  display.println(text);
-}
-
-unsigned long getEmergencyDurationMinutes() {
-    if (emergencyDisplayState == EMERGENCY_DISPLAY_SENDING) {
-        return (millis() - emergencyStartTime) / 60000; // Convert milliseconds to minutes
-    }
-    return emergencyDuration / 60000; // Return the final duration after sent
-}
 unsigned long getEmergencyDurationSeconds() {
     if (emergencyDisplayState == EMERGENCY_DISPLAY_SENDING) {
         return (millis() - emergencyStartTime) / 1000; // Convert milliseconds to seconds
@@ -90,13 +68,6 @@ void displayEmergencyStatus() {
     }
 }
 
-
-void displayDuration() {
-  char durationText[20];
-  snprintf(durationText, sizeof(durationText), "SOS sent %lu min ago", getEmergencyDurationMinutes());
-  display.println(durationText);
-}
-
 void displayGPSData() {
   double currentLat = gps.location.lat();
   double currentLng = gps.location.lng();
@@ -105,13 +76,11 @@ void displayGPSData() {
     display.setTextSize(1);
     // Latitude row
     display.print("Lat: ");
-    // display.setCursor(display.width() - 60, 0);
     display.print(" ");
     display.print(abs(currentLat), 4);
     display.println((currentLat >= 0) ? " N" : " S");
     // Longitude row
     display.print("Lng: ");
-    // display.setCursor(display.width() - 60, 8);
     display.print(abs(currentLng), 4);
     display.println((currentLng >= 0) ? " E" : " W");
 
@@ -136,6 +105,8 @@ void displayMeshStatus() {
 void displayBatteryStatus() {
     display.print("Battery: ");display.print(batteryPercentage);display.println("%");
 }
+
+
 
 void updateDisplay() {
     display.clearDisplay();

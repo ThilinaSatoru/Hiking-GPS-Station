@@ -6,15 +6,6 @@ void setupGPS() {
 }
 
 void updateGPS() {
-    while (gpsSerial.available() > 0) {
-        if (gps.encode(gpsSerial.read())) {
-            // New valid GPS data received
-            if (gps.location.isUpdated()) {
-                // displayGPSInfo();
-            }
-        }
-    }
-
     // Check if GPS is working after 5 seconds
     if (millis() > 5000 && gps.charsProcessed() < 10) {
         Serial.println(F("No GPS detected"));
@@ -57,26 +48,6 @@ void displayGPSInfo() {
         Serial.print(F("/"));
         Serial.println(gps.date.year());
     }
-
-    // if (gps.time.isValid()) {
-    //     Serial.print(F("Time: "));
-    //     if (gps.time.hour() < 10) Serial.print(F("0"));
-    //     Serial.print(gps.time.hour());
-    //     Serial.print(F(":"));
-    //     if (gps.time.minute() < 10) Serial.print(F("0"));
-    //     Serial.print(gps.time.minute());
-    //     Serial.print(F(":"));
-    //     if (gps.time.second() < 10) Serial.print(F("0"));
-    //     Serial.println(gps.time.second());
-    // }
-
-    // Serial.print(F("Satellites: "));
-    // Serial.println(gps.satellites.value());
-    // Serial.print(F("Altitude: "));
-    // if (gps.altitude.isValid())
-    //     Serial.println(gps.altitude.meters());
-    // else
-    //     Serial.println(F("Not Available"));
 
     Serial.println();
 }
