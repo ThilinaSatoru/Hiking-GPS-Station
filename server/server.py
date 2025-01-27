@@ -20,9 +20,9 @@ app = Flask(__name__)
 
 # Initialize Firebase Admin SDK
 try:
-    cred = credentials.Certificate('peakfinderadmin-5cbd9-firebase-adminsdk-vegs5-fea080e489.json')
+    cred = credentials.Certificate('peakfind-6af89-firebase-adminsdk-fefm9-c0d373b2e0.json')
     firebase_admin.initialize_app(cred, {
-        'databaseURL': 'https://peakfinderadmin-5cbd9-default-rtdb.asia-southeast1.firebasedatabase.app/'
+        'databaseURL': 'https://peakfind-6af89-default-rtdb.asia-southeast1.firebasedatabase.app'
     })
     log.info("Firebase initialized successfully")
 except Exception as e:
@@ -111,7 +111,8 @@ def post_station_data():
                     raise
 
         # Handle emergency situation ######################################################
-        if data.get('emergency') is True:
+        if data.get('emergency') == 1:
+            log.warning(data.get('emergency'))
             try:
                 ref = db.reference(f'stations/{data["station"]}')
                 station_data = {

@@ -13,6 +13,7 @@ EmergencyDisplayState emergencyDisplayState = EMERGENCY_DISPLAY_IDLE;
 unsigned long emergencyDisplayTimer = 0;
 const unsigned long DISPLAY_SENT_DURATION = 5000; // 5 seconds
 
+ButtonState currentButtonMode = STATE_NORMAL;
 bool led1State = false;
 // bool led2State = false;
 bool lastButton1State = HIGH;
@@ -22,6 +23,8 @@ unsigned long led2Timer = 0;
 painlessMesh mesh;
 Scheduler meshScheduler;
 bool EMERGENCY = false;
+bool SECONDARY = false;
+bool TERTIARY = false;
 // bool HELP = false;
 uint32_t nodeId;
 

@@ -16,7 +16,7 @@ logging.basicConfig(
 )
 log = logging.getLogger("rich")
 
-COM_PORT = 'COM15'
+COM_PORT = 'COM8'
 BAUD_RATE = 115200
 MAX_RETRIES = 1
 RETRY_DELAY = 5  # seconds
@@ -33,9 +33,10 @@ def post_json_data(data):
         response = requests.post(API_ENDPOINT, json=data, headers=headers)
         if response.status_code == 200:
             log.info("Data posted to Server successfully")
+            return True
         else:
             log.error(f"Failed to post data. Status code: {response.status_code}")
-            # log.error(f"Response: {response.text}")
+            return False
     except requests.exceptions.ConnectionError:
         log.error("Failed to connect to server. Please check if the server is running")
     except requests.exceptions.RequestException as e:
@@ -57,12 +58,16 @@ def read_serial_data():
                 
                 while True:
                     line = ser.readline().decode('utf-8', errors='ignore').strip()
-                    
                     if line:
                         try:
                             data = json.loads(line)
                             print_json(data=data)
                             post_json_data(data)
+                            response = "true"
+                            # Send the boolean response back to the ESP32-S3
+                            ser.write(f"{response}\n".encode('utf-8'))
+                            log.info(f"Sent response to ESP32-S3: {response}")
+
                         except json.JSONDecodeError:
                             log.warning(f"Received invalid JSON data: {line}")
                     

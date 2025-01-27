@@ -23,8 +23,8 @@ String getMeshData() {
     data_json["nodeId"] = String(nodeId);
     data_json["lat"] = gps.location.lat();
     data_json["lng"] = gps.location.lng();
-    data_json["emergency"] = EMERGENCY;
-    data_json["emergencyDuration"] = getEmergencyDurationMinutes();
+    data_json["emergency"] = currentButtonMode;
+    data_json["emergencyDuration"] = 0; //getEmergencyDurationMinutes();
     data_json["battery"] = batteryPercentage;
 
     Serial.print("Sending : ");
@@ -52,8 +52,9 @@ void receivedCallback(uint32_t from, String &msg) {
 
         if (confirmedStation == STATION_NUMBER && confirmedNodeId == String(nodeId)) {
             Serial.println("Received confirmation from Main.");
-            EMERGENCY = false;
-            updateLEDState();  // This will update LED1 state
+            // EMERGENCY = false;
+            // delay(2000);
+            resetButtonCycle();
         }
     } else if (messageType == "request") {
         sendMeshData();

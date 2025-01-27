@@ -29,7 +29,6 @@ enum EmergencyDisplayState {
     EMERGENCY_DISPLAY_SENDING,
     EMERGENCY_DISPLAY_SENT
 };
-
 extern EmergencyDisplayState emergencyDisplayState;
 extern unsigned long emergencyDisplayTimer;
 extern const unsigned long DISPLAY_SENT_DURATION;
@@ -56,6 +55,13 @@ const unsigned long MESH_UPDATE_INTERVAL_MS = 5000;
 const unsigned long DEBUG_INTERVAL_MS = 5000;
 
 // State variables
+enum ButtonState {
+    STATE_NORMAL = 0,
+    STATE_EMERGENCY = 1,
+    STATE_SECONDARY = 2,
+    STATE_TERTIARY = 3
+};
+extern ButtonState currentButtonMode; 
 extern bool led1State;
 extern bool lastButton1State;
 extern unsigned long led2Timer;
@@ -71,6 +77,8 @@ extern unsigned long led2Timer;
 extern painlessMesh mesh;
 extern Scheduler meshScheduler;
 extern bool EMERGENCY;
+extern bool SECONDARY;
+extern bool TERTIARY;
 extern uint32_t nodeId;
 
 // ==============================================
@@ -104,7 +112,7 @@ void updateDisplay();
 void displayGPSData();
 void displayMeshStatus();
 void displayEmergencyStatus();
-unsigned long getEmergencyDurationMinutes();
+// unsigned long getEmergencyDurationMinutes();
 
 // GPS functions
 void setupGPS();
@@ -116,9 +124,9 @@ void displayGPSInfo();
 
 // Button and LED functions
 void setupButtons();
+void updateLEDForState();
+void resetButtonCycle();
 void handleButtons();
-void handleLEDStates();
-void updateLEDState();
 
 // Mesh functions
 void setupMesh();

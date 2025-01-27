@@ -23,5 +23,5 @@ void loop() {
     updateDisplay();
     ReadBattery();
     
-    delay(50);
+    delay(100); // Small delay to debounce and reduce CPU usage
 }

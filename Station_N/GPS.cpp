@@ -2,13 +2,13 @@
 
 void setupGPS() {
     gpsSerial.begin(GPS_BAUD);
-    Serial.println("GPS Module Initialized");
+    // Serial.println("GPS Module Initialized");
 }
 
 void updateGPS() {
     // Check if GPS is working after 5 seconds
     if (millis() > 5000 && gps.charsProcessed() < 10) {
-        Serial.println(F("No GPS detected"));
+        // Serial.println(F("No GPS detected"));
     }
 }
 

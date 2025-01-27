@@ -28,7 +28,7 @@
   <a href="#how-to-use">How To Use</a> •
   <a href="#download">Download</a> •
   <a href="#credits">Credits</a> •
-  <a href="#related">Related</a> •
+  <a href="#references">References</a> •
   <a href="#license">License</a>
 </p>
 
@@ -78,10 +78,9 @@ painlessMesh is a true ad-hoc network, meaning that no-planning, central control
 
 ## Download
 
-+ You can [download](https://downloads.arduino.cc/arduino-ide/arduino-ide_2.3.3_Windows_64bit.exe) the latest installable version of [Arduino IDE](https://www.arduino.cc/en/software) for Windows.
-
-
-+ [Python](https://www.python.org/downloads/) 3.xx (used 3.12) 
++ [Arduino IDE](https://downloads.arduino.cc/arduino-ide/arduino-ide_2.3.3_Windows_64bit.exe) for Windows.
++ [Python](https://www.python.org/downloads/) 3.xx (used 3.12)
++ 
 
 
 ## How To Use

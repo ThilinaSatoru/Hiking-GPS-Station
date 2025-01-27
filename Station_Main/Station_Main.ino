@@ -79,14 +79,26 @@ void updateStationActivity(uint32_t nodeId, int stationNo, String nodeIdStr) {
 
 // Function to send confirmation back to the sender
 void sendConfirmation(uint32_t to, int stationNo, String nodeId) {
-    DynamicJsonDocument confirmDoc(256);
-    confirmDoc["type"] = "confirmation";
-    confirmDoc["station"] = stationNo;
-    confirmDoc["nodeId"] = nodeId;
 
-    String confirmMsg;
-    serializeJson(confirmDoc, confirmMsg);
-    mesh.sendSingle(to, confirmMsg);
+    // Wait for a response from the PC
+    while (!Serial.available()); // Wait until data is available
+    String response = Serial.readStringUntil('\n'); // Read the response
+
+    // Process the boolean response
+    if (response == "true") {
+        DynamicJsonDocument confirmDoc(256);
+        confirmDoc["type"] = "confirmation";
+        confirmDoc["station"] = stationNo;
+        confirmDoc["nodeId"] = nodeId;
+
+        String confirmMsg;
+        serializeJson(confirmDoc, confirmMsg);
+        mesh.sendSingle(to, confirmMsg);
+    } else {
+        // Do something if the response is false
+    }
+
+    
 }
 
 // Callback for new connections
