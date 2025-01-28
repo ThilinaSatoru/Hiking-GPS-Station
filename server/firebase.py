@@ -1,7 +1,12 @@
+import os
 import firebase_admin
 from firebase_admin import credentials
 import logging
 from rich.logging import RichHandler
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(
@@ -14,9 +19,9 @@ log = logging.getLogger("rich")
 
 
 # Path to Firebase service account key
-cred_path = 'peakfind-6af89-firebase-adminsdk-fefm9-c0d373b2e0.json'
+cred_path = os.getenv("FIREBASE_SERVICE_ACCOUNT_FILE")
 # Firebase Realtime Database URL
-database_url = 'https://peakfind-6af89-default-rtdb.asia-southeast1.firebasedatabase.app'
+database_url = os.getenv("FIREBASE_REALTIME_DATABASE")
 
 
 def initialize_firebase():

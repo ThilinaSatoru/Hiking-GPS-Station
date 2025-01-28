@@ -72,7 +72,7 @@ extern unsigned long led2Timer;
 #define MESH_PREFIX     "HIKING"
 #define MESH_PASSWORD   "meshPassword"
 #define MESH_PORT       5555
-#define STATION_NUMBER  1
+#define STATION_NUMBER  2
 
 extern painlessMesh mesh;
 extern Scheduler meshScheduler;

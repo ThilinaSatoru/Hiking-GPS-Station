@@ -167,7 +167,7 @@ class SerialMonitor:
                 ) == 200:
                     self.send_response("true")
                 else:
-                    log.error(f"Error sending Notification for station {new_data}")
+                    log.error(f"Error sending Notification for station: {new_data.station}")
             else:
                 # Check if existing emergency has significant changes
                 existing_data = self.emergency_data[existing_index]
@@ -257,7 +257,7 @@ def main():
     monitor = SerialMonitor(
         port='COM8',
         baud_rate=115200,
-        max_retries=1,
+        max_retries=2,
         retry_delay=5
     )
     monitor.run()
