@@ -96,10 +96,10 @@ To clone and run this application, you'll need [Git](https://git-scm.com) and [P
 Python libraries used.
 ```cmd
 firebase_admin==6.5.0
-Flask==3.1.0
 pyserial==3.5
-Requests==2.32.3
 rich==13.9.4
+serial~=0.0.97
+requests~=2.31.0
 ```
 Generate exe file. 
 ```cmd
@@ -107,7 +107,7 @@ pyinstaller --onefile run.py
 ```
 Output exe to `/dist/run.exe` Move the exe to root directory.
 
-Run the file 
+# Run the file 
 `run.exe` or `python run.py`
 
 
