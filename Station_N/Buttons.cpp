@@ -23,20 +23,24 @@ void updateLEDForState() {
         case STATE_NORMAL:
             digitalWrite(LED1_PIN, LOW);
             DEBUG_PRINT("Mode: NORMAL");
+            ACCEPT = true;
             break;
         case STATE_EMERGENCY:
             digitalWrite(LED1_PIN, HIGH);
             DEBUG_PRINT("Mode: EMERGENCY");
+            ACCEPT = false;
             break;
         case STATE_SECONDARY:
             // Fast blinking
             digitalWrite(LED1_PIN, (millis() / 200) % 2);
             DEBUG_PRINT("Mode: SECONDARY (Fast Blink)");
+            ACCEPT = false;
             break;
         case STATE_TERTIARY:
             // Slow blinking
             digitalWrite(LED1_PIN, (millis() / 1000) % 2);
             DEBUG_PRINT("Mode: TERTIARY (Slow Blink)");
+            ACCEPT = false;
             break;
     }
 }
@@ -54,6 +58,7 @@ void handleButtonPress(int buttonPin, bool &lastButtonState) {
 }
 
 void resetButtonCycle() {
+    ACCEPT = true;
     currentButtonMode = STATE_NORMAL;
     DEBUG_PRINT("Cycle reset to NORMAL.");
 }

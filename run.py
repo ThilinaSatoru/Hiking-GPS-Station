@@ -4,8 +4,9 @@ from datetime import datetime
 
 # Configure logging
 log_filename = "run_scripts.log"
-logging.basicConfig(filename=log_filename, level=logging.INFO, 
+logging.basicConfig(filename=log_filename, level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 def run_script_in_new_window(script_name):
     try:
@@ -18,7 +19,7 @@ def run_script_in_new_window(script_name):
 
 
 # List of scripts to run
-scripts = ['./server/server.py', './server/com.py']
+scripts = ['./server/serial_com.py']
 
 for script in scripts:
     # run_script(script)

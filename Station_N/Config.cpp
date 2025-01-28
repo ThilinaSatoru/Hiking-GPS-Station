@@ -27,6 +27,7 @@ bool SECONDARY = false;
 bool TERTIARY = false;
 // bool HELP = false;
 uint32_t nodeId;
+bool ACCEPT = true;
 
 int batteryPercentage = 0;
 

@@ -19,6 +19,7 @@ String getMeshData() {
     StaticJsonDocument<200> data_json;
     
     data_json["type"] = "data";
+    data_json["accepted"] = ACCEPT;
     data_json["station"] = STATION_NUMBER;
     data_json["nodeId"] = String(nodeId);
     data_json["lat"] = gps.location.lat();
@@ -52,7 +53,6 @@ void receivedCallback(uint32_t from, String &msg) {
 
         if (confirmedStation == STATION_NUMBER && confirmedNodeId == String(nodeId)) {
             Serial.println("Received confirmation from Main.");
-            // EMERGENCY = false;
             // delay(2000);
             resetButtonCycle();
         }

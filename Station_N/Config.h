@@ -80,6 +80,7 @@ extern bool EMERGENCY;
 extern bool SECONDARY;
 extern bool TERTIARY;
 extern uint32_t nodeId;
+extern bool ACCEPT;
 
 // ==============================================
 // Battery Configuration
