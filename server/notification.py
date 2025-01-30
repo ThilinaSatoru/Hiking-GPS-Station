@@ -55,8 +55,8 @@ def send_push_notification(device_token, title, body):
         return response.status_code
 
 
-# # Example usage
-# DEVICE_TOKEN = "DEVICE_REGISTRATION_TOKEN"
-# TITLE = "Hello from FCM V1 with .env!"
-# BODY = "This is a push notification using the FCM V1 API with environment variables."
-# send_push_notification(DEVICE_TOKEN, TITLE, BODY)
+# Example usage
+DEVICE_TOKEN = os.getenv("FIREBASE_DEVICE_TOKEN")
+TITLE = "Hello from FCM V1 with .env!"
+BODY = "This is a push notification using the FCM V1 API with environment variables."
+send_push_notification(DEVICE_TOKEN, TITLE, BODY)

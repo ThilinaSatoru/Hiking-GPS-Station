@@ -159,11 +159,13 @@ class SerialMonitor:
                 # New emergency - add to array and update database
                 self.emergency_data.append(new_data)
                 self._update_emergency_database(new_data)
+                self._push_emergency_record(new_data)
                 log.warning(f"New emergency Type {new_data.emergency} for station {new_data.station}")
+
                 if send_push_notification(
                     os.getenv("FIREBASE_DEVICE_TOKEN"),
                     "Emergency Alert",
-                    f"Emergency type {new_data.emergency}."
+                    f"An emergency type {new_data.emergency} occurred at device {EmergencyType(new_data.emergency).name}."
                 ) == 200:
                     self.send_response("true")
                 else:
@@ -184,7 +186,8 @@ class SerialMonitor:
             self._clear_emergency_database(new_data.station)
             log.info(f"Emergency resolved for station {new_data.station}")
 
-    def _update_emergency_database(self, station_data: StationData) -> None:
+    @staticmethod
+    def _update_emergency_database(station_data: StationData) -> None:
         """Update emergency information in database"""
         try:
             ref = db.reference(f"stations/{station_data.station}")
@@ -200,7 +203,30 @@ class SerialMonitor:
             log.error(f"Failed to update emergency data: {str(e)}")
             raise
 
-    def _clear_emergency_database(self, station: str) -> None:
+    @staticmethod
+    def _push_emergency_record(station_data: StationData) -> None:
+        """Record emergency information in database"""
+        try:
+            # Reference to the station's history sub-path
+            ref = db.reference(f"history")
+            # Generate a new record with a unique key (Firebase automatically handles timestamps)
+            new_entry = ref.push({
+                'nodeId': station_data.node_id,
+                'station': station_data.station,
+                'lat': station_data.lat,
+                'lng': station_data.lng,
+                'emergency': station_data.emergency,
+                'battery': station_data.battery,
+                'timestamp': {'.sv': 'timestamp'}  # Firebase server timestamp
+            })
+            log.info(f"New emergency data saved with key: {new_entry.key}")
+
+        except Exception as e:
+            log.error(f"Failed to update emergency data: {str(e)}")
+            raise
+
+    @staticmethod
+    def _clear_emergency_database(station: str) -> None:
         """Clear emergency information from database"""
         try:
             ref = db.reference(f"stations/{station}")

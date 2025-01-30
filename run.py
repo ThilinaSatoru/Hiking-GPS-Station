@@ -20,6 +20,7 @@ def run_script_in_new_window(script_name):
 
 # List of scripts to run
 scripts = ['./server/serial_communication.py']
+# scripts = ['./server/notification.py']
 
 for script in scripts:
     # run_script(script)
