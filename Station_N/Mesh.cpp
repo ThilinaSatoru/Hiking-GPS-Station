@@ -24,7 +24,7 @@ String getMeshData() {
     data_json["nodeId"] = String(nodeId);
     data_json["lat"] = gps.location.lat();
     data_json["lng"] = gps.location.lng();
-    data_json["emergency"] = currentButtonMode;
+    data_json["emergency"] = selectedButtonMode;
     data_json["emergencyDuration"] = 0; //getEmergencyDurationMinutes();
     data_json["battery"] = batteryPercentage;
 

@@ -55,13 +55,14 @@ const unsigned long MESH_UPDATE_INTERVAL_MS = 5000;
 const unsigned long DEBUG_INTERVAL_MS = 5000;
 
 // State variables
-enum ButtonState {
+enum ButtonMode {
     STATE_NORMAL = 0,
     STATE_EMERGENCY = 1,
     STATE_SECONDARY = 2,
     STATE_TERTIARY = 3
 };
-extern ButtonState currentButtonMode; 
+extern ButtonMode currentButtonMode; 
+extern ButtonMode selectedButtonMode; 
 extern bool led1State;
 extern bool lastButton1State;
 extern unsigned long led2Timer;
@@ -72,7 +73,7 @@ extern unsigned long led2Timer;
 #define MESH_PREFIX     "HIKING"
 #define MESH_PASSWORD   "meshPassword"
 #define MESH_PORT       5555
-#define STATION_NUMBER  2
+#define STATION_NUMBER  1
 
 extern painlessMesh mesh;
 extern Scheduler meshScheduler;

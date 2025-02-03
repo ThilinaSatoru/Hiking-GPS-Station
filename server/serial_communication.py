@@ -31,6 +31,7 @@ class EmergencyType(IntEnum):
     TERTIARY = 3
 
 
+
 @dataclass
 class StationData:
     station: str
@@ -88,6 +89,7 @@ class SerialMonitor:
         self.retry_delay = retry_delay
         self.ser = None
         self.emergency_data: List[StationData] = []
+        self.main_online = False
 
     def connect(self) -> Optional[serial.Serial]:
         """Establish serial connection with retry mechanism"""
@@ -97,6 +99,7 @@ class SerialMonitor:
                 log.info(f"Connected to {self.port}")
                 return self.ser
             except serial.SerialException:
+                self.main_online = False
                 log.error(f"Cannot connect to {self.port}. Attempt {attempt + 1}/{self.max_retries}")
                 if attempt < self.max_retries - 1:
                     time.sleep(self.retry_delay)
@@ -147,7 +150,7 @@ class SerialMonitor:
         Handle emergency situations with state comparison
         Only updates database when there are significant changes
         """
-        # Find existing entry for this station
+        # Find existing entry for this station               
         existing_index = next(
             (i for i, data in enumerate(self.emergency_data)
              if data.station == new_data.station),
@@ -238,6 +241,16 @@ class SerialMonitor:
             log.error(f"Failed to clear emergency data: {str(e)}")
             raise
 
+    def update_main_status(self, online) -> None:
+        try:
+            ref = db.reference(f"stations/main")
+            ref.update({
+                'online': online,
+            })
+        except Exception as e:
+            log.error(f"Failed to update data: {str(e)}")
+            raise
+
     def send_response(self, response: str) -> bool:
         """Send response to ESP32"""
         if self.ser and self.ser.is_open:
@@ -252,12 +265,15 @@ class SerialMonitor:
     def run(self) -> None:
         """Main loop for reading serial data"""
         if not self.connect():
+
             log.error("Failed to establish serial connection")
             return
 
         try:
             while True:
                 line = self.ser.readline().decode('utf-8', errors='ignore').strip()
+                self.main_online = True
+                self.update_main_status(self.main_online)
                 if not line:
                     continue
 
@@ -270,10 +286,15 @@ class SerialMonitor:
                 time.sleep(0.1)
 
         except KeyboardInterrupt:
+            self.main_online = False
             log.info("Program terminated by user")
+        except serial.SerialException:
+            self.main_online = False
+            self.update_main_status(self.main_online)
         finally:
             if self.ser:
                 self.ser.close()
+            self.main_online = False
 
 
 def main():

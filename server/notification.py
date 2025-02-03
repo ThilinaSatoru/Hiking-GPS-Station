@@ -56,7 +56,7 @@ def send_push_notification(device_token, title, body):
 
 
 # Example usage
-DEVICE_TOKEN = os.getenv("FIREBASE_DEVICE_TOKEN")
-TITLE = "Hello from FCM V1 with .env!"
-BODY = "This is a push notification using the FCM V1 API with environment variables."
-send_push_notification(DEVICE_TOKEN, TITLE, BODY)
+# DEVICE_TOKEN = os.getenv("FIREBASE_DEVICE_TOKEN")
+# TITLE = "Hello from FCM V1 with .env!"
+# BODY = "This is a push notification using the FCM V1 API with environment variables."
+# send_push_notification(DEVICE_TOKEN, TITLE, BODY)

@@ -18,19 +18,19 @@ void setupDisplay() {
 }
 
 void updateEmergencyStatus() {
-    if (currentButtonMode == STATE_EMERGENCY && !wasEmergencyActive) {
+    if (selectedButtonMode == STATE_EMERGENCY && !wasEmergencyActive) {
         // Emergency just became active
         emergencyDisplayState = EMERGENCY_DISPLAY_SENDING;
         emergencyStartTime = millis(); // Start timing when entering SENDING state
         wasEmergencyActive = true;
-    } else if (currentButtonMode == STATE_NORMAL && wasEmergencyActive) {
+    } else if (selectedButtonMode == STATE_NORMAL && wasEmergencyActive) {
         // Emergency just ended
         emergencyDisplayState = EMERGENCY_DISPLAY_SENT;
         emergencyDisplayTimer = millis();
         emergencyDuration = millis() - emergencyStartTime; // Store final duration
         wasEmergencyActive = false;
         emergencyJustSent = true;
-    } else if (currentButtonMode == STATE_NORMAL && emergencyJustSent &&
+    } else if (selectedButtonMode == STATE_NORMAL && emergencyJustSent &&
                (millis() - emergencyDisplayTimer > DISPLAY_SENT_DURATION)) {
         // After showing "SOS Sent" for DISPLAY_SENT_DURATION
         emergencyDisplayState = EMERGENCY_DISPLAY_IDLE;
@@ -40,7 +40,7 @@ void updateEmergencyStatus() {
 
 void displayEmergencyStatus() {
     display.setTextSize(1);
-    switch (currentButtonMode) {
+    switch (selectedButtonMode) {
         case STATE_NORMAL:
             display.println("Press SOS Button for Help");
             break;
