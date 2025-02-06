@@ -20,14 +20,14 @@ float getLatitude() {
     if (gps.location.isValid()) {
         return gps.location.lat();
     }
-    return 0.0;
+    return DEFAULT_LAT;  // Return default instead of 0.0
 }
 
 float getLongitude() {
     if (gps.location.isValid()) {
         return gps.location.lng();
     }
-    return 0.0;
+    return DEFAULT_LNG;  // Return default instead of 0.0
 }
 
 void displayGPSInfo() {
@@ -37,7 +37,10 @@ void displayGPSInfo() {
         Serial.print(F(","));
         Serial.println(gps.location.lng(), 6);
     } else {
-        Serial.println(F("Location: Not Available"));
+        Serial.print(F("Location: Default "));
+        Serial.print(DEFAULT_LAT, 6);
+        Serial.print(F(","));
+        Serial.println(DEFAULT_LNG, 6);
     }
 
     if (gps.date.isValid()) {

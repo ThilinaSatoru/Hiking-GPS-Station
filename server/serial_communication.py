@@ -1,15 +1,17 @@
-import os
-import serial
 import json
-import time
 import logging
-from rich.logging import RichHandler
-from firebase_admin import db
+import time
 from dataclasses import dataclass
-from typing import Optional, Set, List
 from enum import IntEnum
-from notification import send_push_notification
+from typing import Optional, Set, List
+
+import serial
 from dotenv import load_dotenv
+from firebase_admin import db
+from rich.logging import RichHandler
+
+from firebase import initialize_firebase, get_device_token
+from notification import send_push_notification
 
 # Load environment variables from .env file
 load_dotenv()
@@ -26,10 +28,9 @@ log = logging.getLogger("rich")
 
 class EmergencyType(IntEnum):
     NONE = 0
-    EMERGENCY = 1
-    SECONDARY = 2
-    TERTIARY = 3
-
+    MEDICAL = 1
+    ENVIRONMENT = 2
+    RESOURCES = 3
 
 
 @dataclass
@@ -40,7 +41,6 @@ class StationData:
     lng: float
     emergency: EmergencyType
     battery: float
-    accepted: bool = False
     online: bool = True
 
     def __eq__(self, other):
@@ -54,7 +54,6 @@ class StationData:
                 self.lng == other.lng and
                 self.emergency == other.emergency and
                 self.battery == other.battery and
-                self.accepted == other.accepted and
                 self.online == other.online
         )
 
@@ -71,15 +70,14 @@ class StationData:
                 self.emergency != other.emergency or
                 self.lat != other.lat or
                 self.lng != other.lng or
-                self.accepted != other.accepted or
                 abs(self.battery - other.battery) > 5  # Only update if battery change > 5%
         )
 
 
 class SerialMonitor:
     REQUIRED_KEYS: Set[str] = {
-        "type", "accepted", "station", "nodeId",
-        "lat", "lng", "emergency", "emergencyDuration", "battery"
+        "type", "station", "nodeId",
+        "lat", "lng", "emergency", "battery"
     }
 
     def __init__(self, port: str, baud_rate: int, max_retries: int = 1, retry_delay: int = 5):
@@ -122,13 +120,13 @@ class SerialMonitor:
             lng=data["lng"],
             emergency=EmergencyType(data["emergency"]),
             battery=data["battery"],
-            accepted=data["accepted"]
         )
 
         # self.update_station_status(station_data)
         self.handle_emergency(station_data)
 
-    def update_station_status(self, station_data: StationData) -> None:
+    @staticmethod
+    def update_station_status(station_data: StationData) -> None:
         """Update station status in Firebase"""
         try:
             ref = db.reference(f'stations/{station_data.station}')
@@ -157,7 +155,7 @@ class SerialMonitor:
             None
         )
 
-        if new_data.emergency in (EmergencyType.EMERGENCY, EmergencyType.SECONDARY, EmergencyType.TERTIARY):
+        if new_data.emergency in (EmergencyType.MEDICAL, EmergencyType.ENVIRONMENT, EmergencyType.RESOURCES):
             if existing_index is None:
                 # New emergency - add to array and update database
                 self.emergency_data.append(new_data)
@@ -166,9 +164,9 @@ class SerialMonitor:
                 log.warning(f"New emergency Type {new_data.emergency} for station {new_data.station}")
 
                 if send_push_notification(
-                    os.getenv("FIREBASE_DEVICE_TOKEN"),
-                    "Emergency Alert",
-                    f"An emergency type {new_data.emergency} occurred at device {EmergencyType(new_data.emergency).name}."
+                        get_device_token(),
+                        "Emergency Alert",
+                        f"An emergency type {new_data.emergency} occurred at device {EmergencyType(new_data.emergency).name}"
                 ) == 200:
                     self.send_response("true")
                 else:
@@ -235,13 +233,13 @@ class SerialMonitor:
             ref = db.reference(f"stations/{station}")
             ref.update({
                 'emergency': EmergencyType.NONE,
-                'accepted': True
             })
         except Exception as e:
             log.error(f"Failed to clear emergency data: {str(e)}")
             raise
 
-    def update_main_status(self, online) -> None:
+    @staticmethod
+    def update_main_status(online) -> None:
         try:
             ref = db.reference(f"stations/main")
             ref.update({
@@ -265,7 +263,6 @@ class SerialMonitor:
     def run(self) -> None:
         """Main loop for reading serial data"""
         if not self.connect():
-
             log.error("Failed to establish serial connection")
             return
 
@@ -298,9 +295,7 @@ class SerialMonitor:
 
 
 def main():
-    from firebase import initialize_firebase
     initialize_firebase()
-
     monitor = SerialMonitor(
         port='COM8',
         baud_rate=115200,

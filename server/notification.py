@@ -37,11 +37,17 @@ def send_push_notification(device_token, title, body):
 
     payload = {
         "message": {
-            "token": device_token,  # Use 'topic' for topic-based notifications
-            "notification": {
-                "title": title,
-                "body": body
-            },
+            "token": device_token,  # Replace with the device token or use "topic" for topic-based messaging
+            "data": {
+                "notifee": json.dumps({  # Use `json.dumps` to convert the dictionary to a JSON string
+                    "title": title,
+                    "body": body,
+                    "android": {
+                        "channelId": "alerts",
+
+                    }
+                })
+            }
         }
     }
 
@@ -53,10 +59,3 @@ def send_push_notification(device_token, title, body):
     else:
         print("Failed to send notification:", response.status_code, response.text)
         return response.status_code
-
-
-# Example usage
-# DEVICE_TOKEN = os.getenv("FIREBASE_DEVICE_TOKEN")
-# TITLE = "Hello from FCM V1 with .env!"
-# BODY = "This is a push notification using the FCM V1 API with environment variables."
-# send_push_notification(DEVICE_TOKEN, TITLE, BODY)

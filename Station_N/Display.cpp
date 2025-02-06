@@ -3,10 +3,13 @@
 bool wasEmergencyActive = false;
 bool emergencyJustSent = false;
 
-void setupDisplay() {
-    if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+void setupDisplay()
+{
+    if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS))
+    {
         Serial.println(F("SSD1306 allocation failed"));
-        for (;;); // Don't proceed, loop forever
+        for (;;)
+            ; // Don't proceed, loop forever
     }
 
     display.clearDisplay();
@@ -17,72 +20,115 @@ void setupDisplay() {
     display.display();
 }
 
-void updateEmergencyStatus() {
-    if (selectedButtonMode == STATE_EMERGENCY && !wasEmergencyActive) {
+void updateEmergencyStatus()
+{
+    if (selectedButtonMode == STATE_MEDICAL && !wasEmergencyActive)
+    {
         // Emergency just became active
         emergencyDisplayState = EMERGENCY_DISPLAY_SENDING;
         emergencyStartTime = millis(); // Start timing when entering SENDING state
         wasEmergencyActive = true;
-    } else if (selectedButtonMode == STATE_NORMAL && wasEmergencyActive) {
+    }
+    else if (selectedButtonMode == STATE_NORMAL && wasEmergencyActive)
+    {
         // Emergency just ended
         emergencyDisplayState = EMERGENCY_DISPLAY_SENT;
         emergencyDisplayTimer = millis();
         emergencyDuration = millis() - emergencyStartTime; // Store final duration
         wasEmergencyActive = false;
         emergencyJustSent = true;
-    } else if (selectedButtonMode == STATE_NORMAL && emergencyJustSent &&
-               (millis() - emergencyDisplayTimer > DISPLAY_SENT_DURATION)) {
+    }
+    else if (selectedButtonMode == STATE_NORMAL && emergencyJustSent &&
+             (millis() - emergencyDisplayTimer > DISPLAY_SENT_DURATION))
+    {
         // After showing "SOS Sent" for DISPLAY_SENT_DURATION
         emergencyDisplayState = EMERGENCY_DISPLAY_IDLE;
         emergencyJustSent = false;
     }
 }
 
-void displayEmergencyStatus() {
+void displayEmergencyStatus()
+{
     display.setTextSize(1);
-    switch (selectedButtonMode) {
+    // Determine which mode to display
+    // ButtonMode displayMode = (selectedButtonMode != STATE_NORMAL) ? selectedButtonMode : currentButtonMode;
+
+    if (selectedButtonMode != STATE_NORMAL)
+    {
+        switch (selectedButtonMode)
+        {
         case STATE_NORMAL:
-            display.println("Press SOS Button for Help");
+            display.println("Press Button for Help");
             break;
-        case STATE_EMERGENCY:
-            display.println("Emergency!!");
-            display.println("Sending SOS...");
-            // You can include elapsed time or other details if needed
-            break;
-        case STATE_SECONDARY:
-            display.println("Stay Alert!");
+        case STATE_MEDICAL:
+            display.println("MEDICAL!");
             display.println("Sending SOS...");
             break;
-        case STATE_TERTIARY:
-            display.println("Monitoring.");
+        case STATE_ENVIRONMENT:
+            display.println("ENVIRONMENT!");
             display.println("Sending SOS...");
             break;
+        case STATE_RESOURCES:
+            display.println("RESOURCE!");
+            display.println("Sending SOS...");
+            break;
+        }
     }
+    else
+    {
+        switch (currentButtonMode)
+        {
+        case STATE_NORMAL:
+            display.println("Press Button for Help");
+            break;
+        case STATE_MEDICAL:
+            display.println("MEDICAL!");
+            break;
+        case STATE_ENVIRONMENT:
+            display.println("ENVIRONMENT!");
+            break;
+        case STATE_RESOURCES:
+            display.println("RESOURCE!");
+            ;
+            break;
+        }
+    }
+
     display.println("");
 }
 
-void displayGPSData() {
-    double currentLat = gps.location.lat();
-    double currentLng = gps.location.lng();
+void displayGPSData()
+{
+    double currentLat = getLatitude();  // Use getter function
+    double currentLng = getLongitude(); // Use getter function
 
-    if (gps.location.isValid()) {
-        display.setTextSize(1);
-        display.print("Lat: ");
-        display.print(abs(currentLat), 4);
-        display.println((currentLat >= 0) ? " N" : " S");
-
-        display.print("Lng: ");
-        display.print(abs(currentLng), 4);
-        display.println((currentLng >= 0) ? " E" : " W");
-    } else {
-        display.println("GPS Loading...");
+    display.setTextSize(1);
+    if (gps.location.isValid())
+    {
+        display.println("GPS Online");
     }
+    else
+    {
+        display.println("Default Location!");
+    }
+
+    display.print("Lat: ");
+    display.print(abs(currentLat), 4);
+    display.println((currentLat >= 0) ? " N" : " S");
+
+    display.print("Lng: ");
+    display.print(abs(currentLng), 4);
+    display.println((currentLng >= 0) ? " E" : " W");
 }
 
-void displayMeshStatus() {
-    if (mesh.getNodeList().size() == 0) {
+void displayMeshStatus()
+{
+    if (mesh.getNodeList().size() == 0)
+    {
         display.println("Connecting...");
-    } else {
+    }
+    else
+    {
         display.print("Station: ");
         display.print(STATION_NUMBER);
         display.print(" (");
@@ -91,16 +137,18 @@ void displayMeshStatus() {
     }
 }
 
-void displayBatteryStatus() {
+void displayBatteryStatus()
+{
     display.print("Battery: ");
     display.print(batteryPercentage);
     display.println("%");
 }
 
-void updateDisplay() {
+void updateDisplay()
+{
     display.clearDisplay();
     display.setCursor(0, 0);
-    
+
     updateEmergencyStatus();
     displayEmergencyStatus();
     displayGPSData();

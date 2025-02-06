@@ -1,6 +1,7 @@
 import os
 import firebase_admin
 from firebase_admin import credentials
+from firebase_admin import firestore
 import logging
 from rich.logging import RichHandler
 from dotenv import load_dotenv
@@ -16,7 +17,6 @@ logging.basicConfig(
     handlers=[RichHandler(rich_tracebacks=False, show_path=False)]
 )
 log = logging.getLogger("rich")
-
 
 # Path to Firebase service account key
 cred_path = os.getenv("FIREBASE_SERVICE_ACCOUNT_FILE")
@@ -44,3 +44,17 @@ def initialize_firebase():
     except Exception as e:
         log.error(f"Firebase initialization failed: {str(e)}")
         return False
+
+
+def get_device_token():
+    try:
+        log.info("Fetching Device Token.")
+        db = firestore.client()
+        doc = db.collection("deviceConfig").document('139D').get()
+        if doc.exists:
+            return doc.to_dict().get('token')
+        else:
+            log.error('Device Token not Found!')
+
+    except Exception as e:
+        log.error(f"Device Token Fetch Failed : ${e}")
