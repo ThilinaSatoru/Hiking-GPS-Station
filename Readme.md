@@ -28,7 +28,7 @@
   <a href="#how-to-use">How To Use</a> •
   <a href="#download">Download</a> •
   <a href="#credits">Credits</a> •
-  <a href="#related">Related</a> •
+  <a href="#references">References</a> •
   <a href="#license">License</a>
 </p>
 
@@ -78,10 +78,9 @@ painlessMesh is a true ad-hoc network, meaning that no-planning, central control
 
 ## Download
 
-+ You can [download](https://downloads.arduino.cc/arduino-ide/arduino-ide_2.3.3_Windows_64bit.exe) the latest installable version of [Arduino IDE](https://www.arduino.cc/en/software) for Windows.
-
-
-+ [Python](https://www.python.org/downloads/) 3.xx (used 3.12) 
++ [Arduino IDE](https://downloads.arduino.cc/arduino-ide/arduino-ide_2.3.3_Windows_64bit.exe) for Windows.
++ [Python](https://www.python.org/downloads/) 3.xx (used 3.12)
++ 
 
 
 ## How To Use
@@ -97,10 +96,10 @@ To clone and run this application, you'll need [Git](https://git-scm.com) and [P
 Python libraries used.
 ```cmd
 firebase_admin==6.5.0
-Flask==3.1.0
 pyserial==3.5
-Requests==2.32.3
 rich==13.9.4
+serial~=0.0.97
+requests~=2.31.0
 ```
 Generate exe file. 
 ```cmd
@@ -108,7 +107,7 @@ pyinstaller --onefile run.py
 ```
 Output exe to `/dist/run.exe` Move the exe to root directory.
 
-Run the file 
+# Run the file 
 `run.exe` or `python run.py`
 
 

@@ -2,13 +2,13 @@
 
 void setupGPS() {
     gpsSerial.begin(GPS_BAUD);
-    Serial.println("GPS Module Initialized");
+    // Serial.println("GPS Module Initialized");
 }
 
 void updateGPS() {
     // Check if GPS is working after 5 seconds
     if (millis() > 5000 && gps.charsProcessed() < 10) {
-        Serial.println(F("No GPS detected"));
+        // Serial.println(F("No GPS detected"));
     }
 }
 
@@ -20,14 +20,14 @@ float getLatitude() {
     if (gps.location.isValid()) {
         return gps.location.lat();
     }
-    return 0.0;
+    return DEFAULT_LAT;  // Return default instead of 0.0
 }
 
 float getLongitude() {
     if (gps.location.isValid()) {
         return gps.location.lng();
     }
-    return 0.0;
+    return DEFAULT_LNG;  // Return default instead of 0.0
 }
 
 void displayGPSInfo() {
@@ -37,7 +37,10 @@ void displayGPSInfo() {
         Serial.print(F(","));
         Serial.println(gps.location.lng(), 6);
     } else {
-        Serial.println(F("Location: Not Available"));
+        Serial.print(F("Location: Default "));
+        Serial.print(DEFAULT_LAT, 6);
+        Serial.print(F(","));
+        Serial.println(DEFAULT_LNG, 6);
     }
 
     if (gps.date.isValid()) {

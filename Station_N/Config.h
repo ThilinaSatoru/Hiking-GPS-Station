@@ -24,12 +24,12 @@ extern Adafruit_SSD1306 display;
 extern unsigned long emergencyStartTime;
 extern unsigned long emergencyDuration;
 
-enum EmergencyDisplayState {
-    EMERGENCY_DISPLAY_IDLE,
-    EMERGENCY_DISPLAY_SENDING,
-    EMERGENCY_DISPLAY_SENT
+enum EmergencyDisplayState
+{
+  EMERGENCY_DISPLAY_IDLE,
+  EMERGENCY_DISPLAY_SENDING,
+  EMERGENCY_DISPLAY_SENT
 };
-
 extern EmergencyDisplayState emergencyDisplayState;
 extern unsigned long emergencyDisplayTimer;
 extern const unsigned long DISPLAY_SENT_DURATION;
@@ -37,8 +37,8 @@ extern const unsigned long DISPLAY_SENT_DURATION;
 // ==============================================
 // GPS Configuration
 // ==============================================
-#define GPS_RX_PIN D3  // Connect to GPS TX
-#define GPS_TX_PIN D4  // Connect to GPS RX
+#define GPS_RX_PIN D3 // Connect to GPS TX
+#define GPS_TX_PIN D4 // Connect to GPS RX
 #define GPS_BAUD 9600
 
 extern TinyGPSPlus gps;
@@ -56,55 +56,57 @@ const unsigned long MESH_UPDATE_INTERVAL_MS = 5000;
 const unsigned long DEBUG_INTERVAL_MS = 5000;
 
 // State variables
+enum ButtonMode
+{
+  STATE_NORMAL = 0,
+  STATE_MEDICAL = 1,
+  STATE_ENVIRONMENT = 2,
+  STATE_RESOURCES = 3
+};
+extern ButtonMode currentButtonMode;
+extern ButtonMode selectedButtonMode;
 extern bool led1State;
 extern bool lastButton1State;
-extern unsigned long led2Timer;
 
 // ==============================================
 // Mesh Network Configuration
 // ==============================================
-#define MESH_PREFIX     "HIKING"
-#define MESH_PASSWORD   "meshPassword"
-#define MESH_PORT       5555
-#define STATION_NUMBER  1
+#define MESH_PREFIX "HIKING"
+#define MESH_PASSWORD "meshPassword"
+#define MESH_PORT 5555
+#define STATION_NUMBER 1
 
 extern painlessMesh mesh;
 extern Scheduler meshScheduler;
-extern bool EMERGENCY;
 extern uint32_t nodeId;
+
+// ==============================================
+// GPS Configuration
+// ==============================================
+#if STATION_NUMBER == 1
+#define DEFAULT_LAT 7.399366
+#define DEFAULT_LNG 80.809972
+#elif STATION_NUMBER == 2
+#define DEFAULT_LAT 7.400771
+#define DEFAULT_LNG 80.810616
+#endif
 
 // ==============================================
 // Battery Configuration
 // ==============================================
-#define BATTERY_PIN  A0
+#define BATTERY_PIN A0
 extern int batteryPercentage;
 
-// ==============================================
-// System Status Structure
-// ==============================================
-struct SystemStatus {
-    bool isGPSFixed;
-    bool isMeshConnected;
-    bool isEmergency;
-    int batteryPercentage;
-    int satelliteCount;
-    int meshNodeCount;
-    float lastLatitude;
-    float lastLongitude;
-};
-
-extern SystemStatus systemStatus;
-
-// ==============================================
+// =====================================================================
 // Function Declarations
-// ==============================================
+// =====================================================================
+
 // Display functions
 void setupDisplay();
 void updateDisplay();
 void displayGPSData();
 void displayMeshStatus();
 void displayEmergencyStatus();
-unsigned long getEmergencyDurationMinutes();
 
 // GPS functions
 void setupGPS();
@@ -116,9 +118,9 @@ void displayGPSInfo();
 
 // Button and LED functions
 void setupButtons();
+void updateLEDForState();
+void resetButtonCycle();
 void handleButtons();
-void handleLEDStates();
-void updateLEDState();
 
 // Mesh functions
 void setupMesh();
@@ -129,11 +131,7 @@ void newConnectionCallback(uint32_t nodeId);
 void changedConnectionCallback();
 void nodeTimeAdjustedCallback(int32_t offset);
 
-// Utility functions
-void updateSystemStatus();
-void printDebugInfo();
-void handleErrors();
-
 void ReadBattery();
+// =====================================================================
 
 #endif

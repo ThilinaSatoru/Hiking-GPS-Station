@@ -2,7 +2,8 @@
 
 Task taskSendData(TASK_SECOND * 5, TASK_FOREVER, &sendMeshData);
 
-void setupMesh() {
+void setupMesh()
+{
     mesh.setDebugMsgTypes(ERROR | STARTUP);
     mesh.init(MESH_PREFIX, MESH_PASSWORD, &meshScheduler, MESH_PORT);
     mesh.onReceive(&receivedCallback);
@@ -14,17 +15,17 @@ void setupMesh() {
     taskSendData.enable();
 }
 
-String getMeshData() {
+String getMeshData()
+{
     nodeId = mesh.getNodeId();
     StaticJsonDocument<200> data_json;
-    
+
     data_json["type"] = "data";
     data_json["station"] = STATION_NUMBER;
     data_json["nodeId"] = String(nodeId);
-    data_json["lat"] = gps.location.lat();
-    data_json["lng"] = gps.location.lng();
-    data_json["emergency"] = EMERGENCY;
-    data_json["emergencyDuration"] = getEmergencyDurationMinutes();
+    data_json["lat"] = getLatitude();
+    data_json["lng"] = getLongitude();
+    data_json["emergency"] = selectedButtonMode;
     data_json["battery"] = batteryPercentage;
 
     Serial.print("Sending : ");
@@ -36,39 +37,49 @@ String getMeshData() {
     return output;
 }
 
-void sendMeshData() {
+void sendMeshData()
+{
     mesh.sendBroadcast(getMeshData());
 }
 
-void receivedCallback(uint32_t from, String &msg) {
-  StaticJsonDocument<200> jsonDoc;
-  DeserializationError error = deserializeJson(jsonDoc, msg);
-  
-  if (!error) {
-    String messageType = jsonDoc["type"];
-    if (messageType == "confirmation") {
-        int confirmedStation = jsonDoc["station"];
-        String confirmedNodeId = jsonDoc["nodeId"];
+void receivedCallback(uint32_t from, String &msg)
+{
+    StaticJsonDocument<200> jsonDoc;
+    DeserializationError error = deserializeJson(jsonDoc, msg);
 
-        if (confirmedStation == STATION_NUMBER && confirmedNodeId == String(nodeId)) {
-            Serial.println("Received confirmation from Main.");
-            EMERGENCY = false;
-            updateLEDState();  // This will update LED1 state
+    if (!error)
+    {
+        String messageType = jsonDoc["type"];
+        if (messageType == "confirmation")
+        {
+            int confirmedStation = jsonDoc["station"];
+            String confirmedNodeId = jsonDoc["nodeId"];
+
+            if (confirmedStation == STATION_NUMBER && confirmedNodeId == String(nodeId))
+            {
+                Serial.println("Received confirmation from Main.");
+                // delay(2000);
+                resetButtonCycle();
+            }
         }
-    } else if (messageType == "request") {
-        sendMeshData();
+        else if (messageType == "request")
+        {
+            sendMeshData();
+        }
     }
-  }
 }
 
-void newConnectionCallback(uint32_t nodeId) {
+void newConnectionCallback(uint32_t nodeId)
+{
     // Handle new connection
 }
 
-void changedConnectionCallback() {
+void changedConnectionCallback()
+{
     // Handle changed connections
 }
 
-void nodeTimeAdjustedCallback(int32_t offset) {
+void nodeTimeAdjustedCallback(int32_t offset)
+{
     // Handle time adjustment
 }
