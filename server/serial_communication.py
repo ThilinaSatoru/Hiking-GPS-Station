@@ -166,7 +166,7 @@ class SerialMonitor:
                 if send_push_notification(
                         get_device_token(),
                         "Emergency Alert",
-                        f"An emergency type {new_data.emergency} occurred at device {EmergencyType(new_data.emergency).name}"
+                        f"An emergency type {EmergencyType(new_data.emergency).name} occurred at device {new_data.station}"
                 ) == 200:
                     self.send_response("true")
                 else:
@@ -296,6 +296,7 @@ class SerialMonitor:
 
 def main():
     initialize_firebase()
+    print(get_device_token())
     monitor = SerialMonitor(
         port='COM8',
         baud_rate=115200,

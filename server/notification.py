@@ -44,7 +44,7 @@ def send_push_notification(device_token, title, body):
                     "body": body,
                     "android": {
                         "channelId": "alerts",
-
+                        "importance": 4,
                     }
                 })
             }
